@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/hzy618861/node-bk/issues"
   },
-  "homepage": "https://github.com/hzy618861/node-bk#readme"
+  "homepage": "https://github.com/hzy618861/node-bk#readme",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.19"
+  }
 }
