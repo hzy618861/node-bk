@@ -21,3 +21,6 @@ ECMAScript:  定义了语法，nodejs与浏览器javascript都必须遵守
 
 * nodejs 使用了ECMAScript语法规范，外加nodejs api  
 
+
+
+
