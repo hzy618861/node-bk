@@ -5,9 +5,14 @@ const serverHandle = (req,res) => {
     req.path = path
     //解析query
     function parseQuery(url){
-         const query = url.
+        let query = {}
+        const map =  new URLSearchParams(url.split('?')[1])
+        map.forEach((value,key)=>{
+           query[key] = value
+        })
+        return query
     }
-    req.query = parseQuery(req.url.split('?')[1])
+    req.query = parseQuery(req.url)
     res.setHeader('Content-type','application/json')  //指定返回字符串格式
     const blogData = handleBlogRouter(req,res)
     if(blogData){

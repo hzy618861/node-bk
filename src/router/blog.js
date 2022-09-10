@@ -1,16 +1,18 @@
+const {getList,getDetail}  = require('../controller/blog')
+const {SuccessModel,ErrorModel}  = require('../model/resModel')
 const handleBlogRoyer = (req,res)=>{
       const method = req.method
       const path = req.path 
       if(method==='GET' && path =='/api/blog/list'){
-         
-         return {
-            msg: '博客列表'
-         }
+         const author = req.query.author || ''
+         const keyword = req.query.keyword || ''
+         const listData = getList(author,keyword)
+         return new SuccessModel(listData)
       }
       if(method==='GET' && path =='/api/blog/detail'){
-        return {
-           msg: '博客详情'
-        }
+         const id = req.query.id
+         const data = getDetail(id)
+        return new SuccessModel(data)
       }
       if(method==='POST' && path =='/api/blog/new'){
         return {
