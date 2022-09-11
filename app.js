@@ -42,7 +42,7 @@ const serverHandle = async (req,res) => {
     }
     req.query = parseQuery(req.url)
     res.setHeader('Content-type','application/json')  //指定返回字符串格式
-    const blogData = handleBlogRouter(req,res)
+    const blogData = await handleBlogRouter(req,res)
     if(blogData){
         res.end(JSON.stringify(blogData))
         return
