@@ -18,7 +18,7 @@ const handleBlogRouter = async (req, res) => {
    }
    if (method === 'GET' && path == '/api/blog/detail') {
       const data = await getDetail(id)
-      return new SuccessModel(data[0])
+      return new SuccessModel(data)
    }
    if (method === 'POST' && path == '/api/blog/new') {
       const blogData = req.body
