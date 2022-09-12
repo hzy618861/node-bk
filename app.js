@@ -1,5 +1,6 @@
 handleBlogRouter = require('./src/router/blog')
 handleUserRouter = require('./src/router/user')
+const {access} = require('./src/utils/log')
 const {get} = require('./src/db/redis')
 const getCookieExpires = () => {
     const d = new Date()
@@ -37,6 +38,7 @@ const getPostData = (req) => {
     return promise
 }
 const serverHandle = async (req,res) => {
+    access(`${req.method} -- ${req.url} -- ${req.headers['user-agent']} -- ${new Date().toLocaleString()}`)
     const path = req.url.split('?')[0]
     req.path = path
     req.body =  await getPostData(req)
