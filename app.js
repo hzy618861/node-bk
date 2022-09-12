@@ -1,5 +1,14 @@
 handleBlogRouter = require('./src/router/blog')
 handleUserRouter = require('./src/router/user')
+const {get} = require('./src/db/redis')
+const getCookieExpires = () => {
+    const d = new Date()
+    d.setTime(d.getTime() + (24*60*60*1000))
+    return d.toGMTString()
+ }
+ 
+//session 数据
+// const SESSION_DATA = {}
 // 用于处理 post data
 const getPostData = (req) => {
     const promise = new Promise((resolve, reject) => {
@@ -41,6 +50,23 @@ const serverHandle = async (req,res) => {
         return query
     }
     req.query = parseQuery(req.url)
+    req.cookie = {}
+    const cookieStr = req.headers.cookie || ''
+    cookieStr.split(';').forEach(item=>{
+         if(!item) return
+         const arr = item.split('=')
+         const key = arr[0].trim()
+         const value = arr[1].trim()
+         req.cookie[key] = value
+    })
+    //解析 session
+    let userId = req.cookie.userid
+    const sessionData = await get(userId || '')
+    if(sessionData){
+        req.session = sessionData
+    }else{
+        req.session = {}
+    }
     res.setHeader('Content-type','application/json')  //指定返回字符串格式
     const blogData = await handleBlogRouter(req,res)
     if(blogData){
