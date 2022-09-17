@@ -31,4 +31,8 @@ app.use(session({
 
 
 
+# git 不同分支拷贝代码
+
+git checkout  要拷贝的文件所在分支  文件路径
+
 

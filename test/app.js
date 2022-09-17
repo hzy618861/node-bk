@@ -7,7 +7,7 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-
+const {REDIS_CONF} = require('./config/db')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const user = require('./routes/user')
@@ -46,7 +46,7 @@ app.use(session({
   },
   //配置redis
   store: redisStore({
-    all:'localhost:6379'
+    all:`${REDIS_CONF.host}:${REDIS_CONF.port}`
   })
 }))
 // routes
