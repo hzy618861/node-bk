@@ -1,5 +1,7 @@
 const Koa = require('koa')
-const app = new Koa()
+const fs = require('fs')
+const path = require('path')
+const morgan = require('koa-morgan')
 const views = require('koa-views')
 const session = require('koa-generic-session')
 const redisStore = require('koa-redis')
@@ -12,7 +14,7 @@ const index = require('./routes/index')
 const users = require('./routes/users')
 const user = require('./routes/user')
 const blog = require('./routes/blog')
-
+const app = new Koa()
 // error handler
 onerror(app)
 

@@ -35,4 +35,11 @@ app.use(session({
 
 git checkout  要拷贝的文件所在分支  文件路径
 
+# 集成日志
+
+`npm i koa-morgan -S`
+const morgan = require('koa-morgan')
+
+
+
 
