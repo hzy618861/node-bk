@@ -1,6 +1,8 @@
 const Koa = require('koa')
 const app = new Koa()
 const views = require('koa-views')
+const session = require('koa-generic-session')
+const redisStore = require('koa-redis')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
@@ -33,7 +35,20 @@ app.use(async (ctx, next) => {
   const ms = new Date() - start
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
-
+//session配置
+app.keys = ['asdasdg11324_']
+app.use(session({
+  //配置cookie
+  cookie:{
+    path:'/',
+    httpOnly:true,
+    maxAge: 24*60*60*1000
+  },
+  //配置redis
+  store: redisStore({
+    all:'localhost:6379'
+  })
+}))
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
