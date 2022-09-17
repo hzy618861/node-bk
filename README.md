@@ -1,13 +1,12 @@
-# express
+# koa
 - web server 框架
    
 # 脚手架
-express-generator
-`npm i express-generator -g`
-运行 express 目录名   初始化项目
+koa-generator
+`npm i express-koa -g`
+运行 koa2 目录名   初始化项目
 
-
-# 中间件原理
+`npm install && npm run dev`
 
 
 
