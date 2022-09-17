@@ -39,6 +39,21 @@ git checkout  要拷贝的文件所在分支  文件路径
 
 `npm i koa-morgan -S`
 const morgan = require('koa-morgan')
+const env = process.env.NODE_ENV == 'dev' ? 'dev' :' combined'
+if(env=='dev'){
+  app.use(morgan('dev',{
+     stream:process.stdout //默认值，写入控制台
+  }));  //默认控制台打印日志
+}else{
+  //线上日志写入文件
+  const logFileName = path.join(__dirname,'logs','access.log')
+  const writeStream = fs.createWriteStream(logFileName,{
+    flags:'a'
+  })
+  app.use(morgan('combined',{
+    stream: writeStream
+  }));
+}
 
 
 

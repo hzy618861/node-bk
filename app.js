@@ -37,6 +37,22 @@ app.use(async (ctx, next) => {
   const ms = new Date() - start
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
+
+const env = process.env.NODE_ENV == 'dev' ? 'dev' :' combined'
+if(env=='dev'){
+  app.use(morgan('dev',{
+     stream:process.stdout //默认值，写入控制台
+  }));  //默认控制台打印日志
+}else{
+  //线上日志写入文件
+  const logFileName = path.join(__dirname,'logs','access.log')
+  const writeStream = fs.createWriteStream(logFileName,{
+    flags:'a'
+  })
+  app.use(morgan('combined',{
+    stream: writeStream
+  }));
+}
 //session配置
 app.keys = ['asdasdg11324_']
 app.use(session({
