@@ -1,33 +1,32 @@
-var express = require('express');
-var router = express.Router();
-const { SuccessModel, ErrorModel } = require('../model/resModel')
+const router = require('koa-router')()
+router.prefix('/api/user')
+const { SuccessModel,ErrorModel } = require('../model/resModel')
 const {
   Login
 } = require('../controller/user')
-router.post('/login', async function(req, res, next) {
-  const {username,password} = req.body
+router.post('/login', async function (ctx, next) {
+  const {username,password} = ctx.request.body
   const data = await Login(username,password)
   if(data.username){
      //设置session
-     req.session.username = data.username
-     req.session.realname = data.realname
-     res.json(new SuccessModel('登陆成功'))
+     ctx.session.username = data.username
+     ctx.session.realname = data.realname
+     ctx.body = new SuccessModel('登陆成功')
   }else{
-    res.json(new ErrorModel('登陆失败'))
+    ctx.body = new ErrorModel('登陆失败')
   }
-});
-router.get('/session-get', function(req, res, next) {
-    if(req.session.username){
-       res.json({
-         errno:0,
-         data: req.session
-       })
-    }else{
-      res.json({
-        errno:-1,
-        msg: '登陆失败'
-      })
-    }
-});
+})
 
-module.exports = router;
+router.get('/session-test', async function (ctx, next) {
+  //ctx包含req res 的合并结果
+  if (ctx.session.viewCount==null) {
+    ctx.session.viewCount = 0
+  }
+  ctx.session.viewCount++
+  ctx.body = {
+    errno: 0,
+    viewCount:ctx.session.viewCount
+  }
+})
+
+module.exports = router
