@@ -62,6 +62,44 @@ npm i  xss -S
     })
 ```
 
+# pm2
+- 进程守护，程序崩溃自动重启
+- 启动多进程，充分利用cpu和内存
+- 自带日志记录功能
+
+`npm i pm2 -g`
+- pm2 --version 查看版本
+- pm2 list查看启动列表
+- package.json配置启动命令    pm2 start ./bin/www.js 
+
+
+### 常见命令
+pm2 start 文件
+pm2 restart id
+pm2 stop id
+pm2 info id 查看信息
+pm2 log id  查看日志
+pm2 monit id 查看cpu内存信息
+
+
+### 配置文件
+"prd": "cross-env NODE_ENV=production  pm2 start pm2.config.json"
+-  新建 pm2.config.json配置文件
+```
+{
+    "apps":{
+        "name":"blog",
+        "script":"bin/www.js",
+        "watch": false,
+        "ignore_watch": ["node_modules","logs"],
+        "instances":4,
+        "error_file":"logs/err.log",
+        "out_file": "logs/out.log",
+        "log_date_format": "YYYY-MM-DD HH:mm:ss"
+    }
+}
+```
+
 
 
 
