@@ -5,11 +5,11 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-
+const jwt = require('koa-jwt')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const errorViewRouter = require('./routes/view/error')
-
+const {SECRET} =  require('./config/constants')
 // error handler
 const env = process.env.NODE_ENV
 if(env=='production'){
@@ -19,6 +19,11 @@ if(env=='production'){
 }else if(env=='dev'){
   onerror(app)
 }
+// app.use(jwt({
+//   secret:SECRET
+// }).unless({
+//   path:[/^\/users\/login/]  //哪些目录忽略jwt
+// }))
 // middlewares
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
