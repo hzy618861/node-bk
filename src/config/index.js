@@ -1,4 +1,4 @@
-const env = process.env.NODE_ENV
+const env = process.env.NODE_ENV || 'dev'
 let MYSQL_CONF
 let REDIS_CONF
 if (env == 'dev' || env == 'test') {
@@ -14,7 +14,6 @@ if (env == 'dev' || env == 'test') {
         port: '6379',
     }
 }
-386017679
 if (env == 'production') {
     MYSQL_CONF = {
         host: 'localhost',

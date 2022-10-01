@@ -10,7 +10,9 @@ const redisStore = require('koa-redis')
 const {REDIS_CONF} = require('./config')
 // const jwt = require('koa-jwt')
 const index = require('./routes/index')
-const users = require('./routes/users')
+// const users = require('./routes/users')
+const user = require('./routes/view/user')
+const userApi = require('./routes/api/user')
 const errorViewRouter = require('./routes/view/error')
 const {SECRET} =  require('./config/constants')
 // error handler
@@ -67,7 +69,9 @@ app.use(session({
 }))
 // routes
 app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
+// app.use(users.routes(), users.allowedMethods())
+app.use(user.routes(), user.allowedMethods())
+app.use(userApi.routes(), userApi.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods())
 
 // error-handling
