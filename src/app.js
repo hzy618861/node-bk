@@ -5,7 +5,10 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-const jwt = require('koa-jwt')
+const session = require('koa-generic-session')
+const redisStore = require('koa-redis')
+const {REDIS_CONF} = require('./config')
+// const jwt = require('koa-jwt')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const errorViewRouter = require('./routes/view/error')
@@ -19,6 +22,8 @@ if(env=='production'){
 }else if(env=='dev'){
   onerror(app)
 }
+
+
 // app.use(jwt({
 //   secret:SECRET
 // }).unless({
@@ -44,6 +49,22 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
+
+// session配置
+app.keys = ['Uiadhasdhas_889112;asd']
+app.use(session({
+  key: 'weobo-sid',  //cookie name 默认是koa.sid
+  prefix: 'weibo:sess:', //redis key的前缀 默认为koa:sess:
+  cookie:{
+    path:'/',
+    httpOnly:true,
+    maxAge: 24*60*60*1000 //ms
+  },
+  //ttl:  24*60*60*1000, // redis过期时间  默认和cookie过期时间一样
+  store: redisStore({
+     all: `${REDIS_CONF.host}:${REDIS_CONF.port}`
+  })
+}))
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
