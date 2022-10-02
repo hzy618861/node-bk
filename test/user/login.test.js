@@ -51,12 +51,45 @@ test('登陆', async () => {
 
 })
 
+//修改基本信息
+test('修改基本信息', async () => {
+    const res = await server.patch('/api/user/changeInfo')
+    .set('cookie',COOKIE)
+    .send({
+         nickName:"测试",
+         city:"测试",
+         picture:'adad'
+    })
+    expect(res.body.errno).toBe(0)
+})
+
+
+//修改密码
+test('修改密码', async () => {
+    const res = await server.patch('/api/user/changePassword')
+    .set('cookie',COOKIE)
+    .send({
+         newPassword: `p_${Date.now()}`,
+         password
+    })
+    expect(res.body.errno).toBe(0)
+})
+
+
 //删除用户
 test('删除用户', async () => {
     const res = await server.post('/api/user/delete')
     .set('cookie',COOKIE)
     expect(res.body.errno).toBe(0)
 })
+
+//退出
+test('退出', async () => {
+    const res = await server.post('/api/user/logout')
+    .set('cookie',COOKIE)
+    expect(res.body.errno).toBe(0)
+})
+
 
 //再次查询用户应该不存在
 test('再次查询用户应该不存在', async () => {

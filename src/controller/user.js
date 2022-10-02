@@ -1,5 +1,5 @@
 
-const {getUserInfo, createUser,deleteUser} = require('../services/user')
+const {getUserInfo, createUser,deleteUser, updateUser} = require('../services/user')
 const {SuccessModel,ErrorModel} = require('../model/resModel')
 const { doCrypto } = require('../utils/cryp')
 async function isExist(userName){
@@ -77,9 +77,57 @@ async function deleteCurUser(userName){
     })
    }
 }
+
+async function changeInfo(ctx,{nickName,picture,city}){
+    const {userName} = ctx.session.userInfo
+    const res = await updateUser({
+        newNickName: nickName,
+        newPicture: picture,
+        newCity: city
+    },{userName})
+    if(res){
+        ctx.session.userInfo = {
+            ...ctx.session.userInfo,
+            nickName,
+            picture,
+            city
+        }
+        return new SuccessModel()
+    }else{
+        return new ErrorModel({
+            errno:-1,
+            message:'更新失败'
+        })
+    }
+}
+async function changePasword(ctx,{newPassword,password}){
+    const {userName} = ctx.session.userInfo
+    const res = await updateUser({
+        newPassword: doCrypto(newPassword)
+    },{userName,password: doCrypto(password)})
+    if(res){
+        ctx.session.userInfo = {
+            ...ctx.session.userInfo,
+            password: newPassword
+        }
+        return new SuccessModel()
+    }else{
+        return new ErrorModel({
+            errno:-1,
+            message:'更新失败'
+        })
+    }
+}
+async function logout(ctx){
+    delete ctx.session.userInfo
+    return new SuccessModel()
+}
 module.exports = {
     isExist,
     register,
     login,
-    deleteCurUser
+    deleteCurUser,
+    changeInfo,
+    changePasword,
+    logout
 }
