@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/eslint-parser": "^7.19.1",
     "ajv": "^8.11.0",
+    "ajv-i18n": "^4.2.0",
     "cross-env": "^7.0.3",
     "debug": "^4.1.1",
     "ejs": "~2.3.3",

@@ -1,15 +1,15 @@
 
-const {getUserInfo, createUser} = require('../services/user')
+const {getUserInfo, createUser,deleteUser} = require('../services/user')
 const {SuccessModel,ErrorModel} = require('../model/resModel')
 const { doCrypto } = require('../utils/cryp')
 async function isExist(userName){
       const userInfo = await getUserInfo(userName)
-      if(userInfo){
+      if(!userInfo){
        return  new SuccessModel(userInfo)
       }else{
         return  new ErrorModel({
             errno: -1,
-            message:'用户名不存在'
+            message:'用户名已经存在'
         })
       }
 }
@@ -20,7 +20,7 @@ async function isExist(userName){
  * @param {number} gender   性别(1 男 2 女 3保密)
  */
 async function register({userName,password,gender}){
-    const userInfo = await getUserInfo(userName,password)
+    const userInfo = await getUserInfo(userName,doCrypto(password))
     if(userInfo){
         return  new ErrorModel({
             errno: -1,
@@ -40,7 +40,46 @@ async function register({userName,password,gender}){
         }
     }
 }
+/**
+ * 
+ * @param {*} ctx 上下文 
+ * @param {*} userName 用户名
+ * @param {*} password 密码
+ * @returns 
+ */
+async function login(ctx,userName,password){
+    //登陆成功 ctx.session.userInfo = xx
+    const userInfo = await getUserInfo(userName,doCrypto(password))
+    if(userInfo){
+        ctx.session.userInfo = userInfo
+        return new SuccessModel({
+            errno:0,
+            data:{
+                userInfo
+            },
+            message:'登陆成功'
+        })
+    }else{
+        return new ErrorModel({
+            errno:-1,
+            message:'用户名或密码错误'
+        })
+    }
+}
+async function deleteCurUser(userName){
+   const res = await deleteUser(userName)
+   if(res){
+    return new SuccessModel()
+   }else{
+    return new ErrorModel({
+        errno:-1,
+        message:'删除失败'
+    })
+   }
+}
 module.exports = {
     isExist,
-    register
+    register,
+    login,
+    deleteCurUser
 }

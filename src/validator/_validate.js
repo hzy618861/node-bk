@@ -1,6 +1,7 @@
 
 
 const Ajv = require('ajv')
+const localize = require("ajv-i18n")
 const ajv = new Ajv({
     // allErrors: true // 输出所有的错误（比较慢）
 })
@@ -13,7 +14,8 @@ const ajv = new Ajv({
 function validate(schema, data = {}) {
     const valid = ajv.validate(schema, data)
     if (!valid) {
-        return ajv.errors[0]
+        localize['zh']((ajv.errors))  //汉化错误信息
+        return  ajv.errors[0].message
     }
 }
 

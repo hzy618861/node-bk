@@ -31,7 +31,16 @@ async function createUser({ userName, password, gender = 3, nickName }) {
         userName, password, gender, nickName: nickName ? nickName : userName
     })
 }
+async function deleteUser(userName) {
+    const res = await User.destroy({
+        where: {
+            userName
+        }
+    })
+    return res > 0
+}
 module.exports = {
     getUserInfo,
-    createUser
+    createUser,
+    deleteUser
 }
