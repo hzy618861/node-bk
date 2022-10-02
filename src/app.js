@@ -13,6 +13,7 @@ const index = require('./routes/index')
 // const users = require('./routes/users')
 const user = require('./routes/view/user')
 const userApi = require('./routes/api/user')
+const uploadApi = require('./routes/api/utils/upload')
 const errorViewRouter = require('./routes/view/error')
 const {SECRET} =  require('./config/constants')
 // error handler
@@ -72,6 +73,7 @@ app.use(index.routes(), index.allowedMethods())
 // app.use(users.routes(), users.allowedMethods())
 app.use(user.routes(), user.allowedMethods())
 app.use(userApi.routes(), userApi.allowedMethods())
+app.use(uploadApi.routes(), uploadApi.allowedMethods())
 app.use(errorViewRouter.routes(), errorViewRouter.allowedMethods())
 
 // error-handling
