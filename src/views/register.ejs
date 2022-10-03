@@ -54,7 +54,7 @@
                         userName
                     }, function(err, data) {
                         $spanUserNameInfo.show()
-                        if (!err) {
+                        if (err) {
                             $spanUserNameInfo.text('用户名可用')
                             isUserNameExist = false
                         } else {

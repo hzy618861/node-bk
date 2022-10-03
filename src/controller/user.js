@@ -4,12 +4,12 @@ const {SuccessModel,ErrorModel} = require('../model/resModel')
 const { doCrypto } = require('../utils/cryp')
 async function isExist(userName){
       const userInfo = await getUserInfo(userName)
-      if(!userInfo){
+      if(userInfo){
        return  new SuccessModel(userInfo)
       }else{
         return  new ErrorModel({
             errno: -1,
-            message:'用户名已经存在'
+            message:'用户名不存在'
         })
       }
 }
