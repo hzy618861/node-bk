@@ -1,7 +1,7 @@
 const router = require('koa-router')()
 const {isExist,register,login,deleteCurUser, changeInfo, changePasword, logout} = require('../../controller/user')
 const { genValidator } = require('../../middleware/validator')
-const userValidate = require('../../validator/User')
+const userValidate = require('../../validator/user')
 const { loginCheck } = require('../../middleware/loginChecks')
 
 router.prefix('/api/user')
