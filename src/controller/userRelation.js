@@ -1,5 +1,7 @@
 const { getUsersByFollower,getFollowersByUser, addFollower,deleteFollower } = require("../services/userRelation")
 const {SuccessModel,ErrorModel} = require('../model/resModel')
+const { getAtRelationCount, getAtUserBlogList, updateAtRelation } = require("../services/atRelation")
+const { PAGE_SIZE } = require("../config/constants")
 async function getFans(userId){
     const {count,userList} = await getUsersByFollower(userId)
     return new SuccessModel({
@@ -41,9 +43,39 @@ async function unFollow(myId,curId){
     }
     
 }
+//获取at 我的微博数量
+async function getAtCount(userId){
+    const count = await getAtRelationCount(userId)
+    return new SuccessModel({
+        count
+    })
+ }
+ 
+ async function getAtMeBlogList(userId,pageIndex = 0){
+    const res = await getAtUserBlogList({userId,pageIndex,pageSize:PAGE_SIZE})
+    return new SuccessModel({
+        isEmpty: res.blogList.length == 0,
+        blogList: res.blogList,
+        pageSize: PAGE_SIZE,
+        pageIndex,
+        count: res.count
+      })
+ }
+
+ async function markAdRead(userId){
+    try{
+        await updateAtRelation({newIsRead: true},{userId,isRead:false})
+    }catch(e){
+         console.error(e)
+    }
+ }
+
 module.exports = { 
     getFans,
     follow,
     unFollow,
-    getFollowers
+    getFollowers,
+    getAtCount,
+    markAdRead,
+    getAtMeBlogList
 }

@@ -1,5 +1,5 @@
 const { getProfileBlogList, getSquareBlogList, getHomeBlogList } = require('../../controller/blog')
-const { getFans, getFollowers } = require('../../controller/userRelation')
+const { getFans, getFollowers, getAtCount, getAtMeBlogList, markAdRead } = require('../../controller/userRelation')
 const { loginRedirect } = require('../../middleware/loginChecks')
 const { isExist } = require('../../controller/user')
 const { PAGE_SIZE } = require('../../config/constants')
@@ -11,18 +11,20 @@ const router = require('koa-router')()
 router.get('/', loginRedirect, async (ctx, next) => {
     const userInfo = ctx.session.userInfo
     //获取第一页数据
-    const res = await getHomeBlogList({ userId: userInfo.id,pageSize:PAGE_SIZE })
+    const res = await getHomeBlogList({ userId: userInfo.id, pageSize: PAGE_SIZE })
     //获取粉丝
     const fanResult = await getFans(userInfo.id)
     //获取关注人列表
     const followers = await getFollowers(userInfo.id)
+    //@ 数量
+    const countResult = await getAtCount(userInfo.id)
     await ctx.render('index', {
         blogData: {
             ...res.data
-       },
+        },
         userData: {
             userInfo: ctx.session.userInfo,
-            atCount: 0,
+            atCount: countResult.data.count,
             fansData: {
                 count: fanResult.data.count,
                 list: fanResult.data.userList,
@@ -66,6 +68,9 @@ router.get('/profile/:userName', loginRedirect, async (ctx, next) => {
 
     //获取关注人列表
     const followers = await getFollowers(userInfo.id)
+
+    //@ 数量
+    const countResult = await getAtCount(ctx.session.userInfo.id)
     await ctx.render('profile', {
         blogData: {
             ...result.data
@@ -74,7 +79,7 @@ router.get('/profile/:userName', loginRedirect, async (ctx, next) => {
             isMe,
             amIFollowed,
             userInfo,
-            atCount: 0,
+            atCount: countResult.data.count,
             fansData: { //粉丝列表
                 count: fanResult.data.count,
                 list: fanResult.data.userList,
@@ -86,7 +91,23 @@ router.get('/profile/:userName', loginRedirect, async (ctx, next) => {
         }
     })
 })
+router.get('/at-me', loginRedirect, async (ctx, next) => {
+    const { id } = ctx.session.userInfo
+    //@ 数量
+    const countResult = await getAtCount(id)
+    //第一页数据
+    const res = await getAtMeBlogList(id, 0)
+    await ctx.render('atMe', {
+        atCount: countResult.data.count,
+        blogData: res.data
+        //标记已读
 
+
+    })
+    if(countResult.data.count > 0) {
+         await markAdRead(id)
+    }
+})
 router.get('/square', loginRedirect, async (ctx, next) => {
     const res = await getSquareBlogList(0)
     const { isEmpty, blogList, pageSize, pageIndex, count } = res.data

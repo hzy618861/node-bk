@@ -3,6 +3,7 @@ const {isExist,register,login,deleteCurUser, changeInfo, changePasword, logout} 
 const { genValidator } = require('../../middleware/validator')
 const userValidate = require('../../validator/user')
 const { loginCheck } = require('../../middleware/loginChecks')
+const { getFollowers } = require('../../controller/userRelation')
 
 router.prefix('/api/user')
 router.post('/isExist', async (ctx, next) => {
@@ -40,4 +41,16 @@ router.patch('/changePassword',loginCheck, genValidator(userValidate), async (ct
 router.post('/logout',loginCheck, async (ctx, next) => {
     ctx.body =  await logout(ctx) 
 })
+
+
+//at 列表 关注人列表
+router.get('/getAtList',loginCheck, async (ctx, next) => {
+    const res =  await getFollowers(ctx.session.userInfo.id) 
+    const arr = res.data.userList.map(item=>{
+         return `${item.nickName} - ${item.userName}`
+    })
+    ctx.body = arr
+})
+
+
 module.exports = router
