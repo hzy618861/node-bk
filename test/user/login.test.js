@@ -26,7 +26,7 @@ test('重复注册，应该失败', async () => {
 //查询用户是否存在
 test('查询用户是否存在', async () => {
     const res = await server.post('/api/user/isExist').send({ userName })
-    expect(res.body.errno).not.toBe(0)
+    expect(res.body.errno).toBe(0)
 })
 
 
@@ -95,5 +95,5 @@ test('退出', async () => {
 test('再次查询用户应该不存在', async () => {
     const res =  await server.post('/api/user/isExist')
     .send({userName})
-     expect(res.body.errno).toBe(0)
+     expect(res.body.errno).not.toBe(0)
 })

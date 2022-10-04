@@ -1,10 +1,17 @@
-const { getUsersByFollower, addFollower,deleteFollower } = require("../services/userRelation")
+const { getUsersByFollower,getFollowersByUser, addFollower,deleteFollower } = require("../services/userRelation")
 const {SuccessModel,ErrorModel} = require('../model/resModel')
 async function getFans(userId){
     const {count,userList} = await getUsersByFollower(userId)
     return new SuccessModel({
         count,userList
     })
+}
+//获取关注人
+async function getFollowers(userId){
+  const {count,userList} = await getFollowersByUser(userId)
+  return new SuccessModel({
+    count,userList
+  })
 }
 /**
  * 
@@ -37,5 +44,6 @@ async function unFollow(myId,curId){
 module.exports = { 
     getFans,
     follow,
-    unFollow
+    unFollow,
+    getFollowers
 }
