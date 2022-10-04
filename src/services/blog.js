@@ -1,4 +1,4 @@
-const { Blog,User } = require('../db/model/index')
+const { Blog,User,UserRelation } = require('../db/model/index')
 const { formatUser } = require('./_format')
 const xss = require('xss')
 async function createBlog({userId,content,image}) {
@@ -41,7 +41,40 @@ async function getBlogListByUser({userName,pageIndex = 0 ,pageSize = 10}) {
     }
 
 }
+
+//获取关注者微博
+async function getFollowersBlogList({userId,pageIndex=0,pageSize = 5}) {
+   const res = await Blog.findAndCountAll({
+     limit: pageSize,
+     offset: pageIndex * pageSize,
+     order:[
+        ["id","desc"]
+     ],
+     include:[
+         {
+            model: User,
+            attributes:['userName','nickName','picture']
+         },
+         {
+            model: UserRelation,
+            attributes:['userId','followerId'],
+            where: { userId }
+         },
+     ]
+   })
+  
+   let blogList = res.rows.map(item=>item.dataValues)
+   blogList = blogList.map(item=>{
+      item.user = formatUser(item['user-new'].dataValues)
+      return item
+   })
+   return {
+     count: res.count,
+     blogList: blogList
+   }
+}
 module.exports = {
     createBlog,
-    getBlogListByUser
+    getBlogListByUser,
+    getFollowersBlogList
 }

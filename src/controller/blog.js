@@ -1,5 +1,5 @@
 const { SuccessModel, ErrorModel } = require("../model/resModel")
-const { createBlog, getBlogListByUser } = require("../services/blog")
+const { createBlog, getBlogListByUser, getFollowersBlogList } = require("../services/blog")
 const { PAGE_SIZE } = require("../config/constants")
 const xss = require('xss')
 const { getSquareCacheList } = require("../cache/blog")
@@ -36,8 +36,19 @@ async function getSquareBlogList(pageIndex = 0) {
   })
 }
 
+async function getHomeBlogList({userId, pageIndex = 0 ,pageSize = 5}) {
+  const res = await getFollowersBlogList({userId, pageIndex, pageSize})
+  return new SuccessModel({
+    isEmpty: res.blogList.length == 0,
+    blogList: res.blogList,
+    pageSize: PAGE_SIZE,
+    pageIndex,
+    count: res.count
+  })
+}
 module.exports = {
   create,
   getProfileBlogList,
-  getSquareBlogList
+  getSquareBlogList,
+  getHomeBlogList
 }

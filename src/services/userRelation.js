@@ -1,5 +1,6 @@
 const { UserRelation, User } = require('../db/model/index')
 const { formatUser } = require('./_format')
+const sequelize = require('sequelize')
 /**
  * 
  * @param {*} followerId  被关注人的ID
@@ -21,7 +22,10 @@ async function getUsersByFollower(followerId) {
             {
                 model: UserRelation,
                 where: {
-                    followerId
+                    followerId,
+                    userId: {
+                        [sequelize.Op.ne]: followerId  //userId不等于followerId，排除自己关注自己
+                    }
                 }
             }
         ]
@@ -52,7 +56,10 @@ async function getFollowersByUser(userId) {
             }
         ],
         where: {
-            userId
+            userId,
+            followerId:{
+                [sequelize.Op.ne]: userId  //followerId不等于userId，排除自己关注自己
+            }
         }
     })
     let userList = result.rows.map(item => item.dataValues)

@@ -1,4 +1,5 @@
 const { User } = require('../db/model/index')
+const { addFollower } = require('./userRelation')
 const { formatUser } = require('./_format')
 async function getUserInfo(userName, password) {
     //查询条件
@@ -27,9 +28,12 @@ async function getUserInfo(userName, password) {
  * @param {string} nickName 昵称 
  */
 async function createUser({ userName, password, gender = 3, nickName }) {
-    return await User.create({
+    const res =  await User.create({
         userName, password, gender, nickName: nickName ? nickName : userName
     })
+    //自己关注自己 方便首页获取数据
+    addFollower(res.dataValues.id,res.dataValues.id)
+    return res
 }
 async function deleteUser(userName) {
     const res = await User.destroy({
